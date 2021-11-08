@@ -2,6 +2,7 @@
 #-----import statements-----
 import turtle as trtl
 import random as rand
+import leaderboard as lb
 
 
 #-----game configuration----
@@ -17,9 +18,15 @@ colors = ["red", "blue", "green", "purple", "orange", "yellow", "pink"]
 size = [0.5, 1, 1.5, 2, 5]
 #countdown variables
 font_setup = ("Arial", 20, "normal")
-timer = 30
+timer = 5
 counter_interval = 1000   #1000 represents 1 second
 timer_up = False
+
+#leaderboard variables
+leaderboeard_name_file = "a112_leaderboard.txt"
+leader_name_list = []
+leader_scores = []
+player_name = input("please enter your name: ")
 #-----initialize turtle-----
 spot = trtl.Turtle()
 spot.shape(spot_shape)
@@ -69,6 +76,7 @@ def countdown():
   if timer <= 0:
     counter.write("Time's Up", font=font_setup)
     timer_up = True
+    manage_leaderboard()
   else:
     counter.write("Timer: " + str(timer), font=font_setup)
     timer -= 1
@@ -81,6 +89,25 @@ def color_change():
 def change_size():
   new_size = rand.choice(size)
   spot.shapesize(new_size)
+
+# manages the leaderboard for top 5 scorers
+def manage_leaderboard():
+  
+  global leader_scores_list
+  global leader_names_list
+  global score
+  global spot
+
+  # load all the leaderboard records into the lists
+  lb.load_leaderboard(leaderboard_file_name, leader_names_list, leader_scores_list)
+
+  # TODO
+  if (len(leader_scores_list) < 5 or score > leader_scores_list[4]):
+    lb.update_leaderboard(leaderboard_file_name, leader_names_list, leader_scores_list, player_name, score)
+    lb.draw_leaderboard(leader_names_list, leader_scores_list, True, spot, score)
+
+  else:
+    lb.draw_leaderboard(leader_names_list, leader_scores_list, False, spot, score)
 
 
 #-----events----------------
